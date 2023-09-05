@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reminder List</title>
+</head>
+<body>
+    <h1>Reminder List</h1>
+    <ul>
+        {% for reminder in reminders %}
+            <li>
+                <strong>{{ reminder.text }}</strong><br>
+                Date & Time: {{ reminder.date_time }}<br>
+                <a href="{% url 'edit_reminder' reminder.id %}">Edit</a> |
+                <a href="{% url 'delete_reminder' reminder.id %}">Delete</a>
+            </li>
+        {% empty %}
+            <p>No reminders available.</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_reminder' %}">Add Reminder</a>
+</body>
+</html>
