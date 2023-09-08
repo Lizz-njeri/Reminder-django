@@ -23,8 +23,8 @@ def reminder_view(request):
     return render(request, 'reminders/index.html', {'reminders': reminders})
 
 def send_sms(reminder):
-    africastalking_username = 'your_username'
-    africastalking_api_key = 'your_api_key'
+    africastalking_username = 'username'
+    africastalking_api_key = 'api_key'
 
     africastalking.initialize(africastalking_username, africastalking_api_key)
 
