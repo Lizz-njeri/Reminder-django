@@ -1,52 +1,39 @@
-from django.shortcuts import render, get_object_or_404, redirect
+# views.py
+
+from django.shortcuts import render, redirect
 from .models import Reminder
 from .forms import ReminderForm
-
 import africastalking
 
-# Initialize Africa's Talking API
-username = "your_username"
-api_key = "your_api_key"
-africastalking.initialize(username, api_key)
-def send_sms(phone_number, message):
-    sms = africastalking.SMS
-    response = sms.send(message, [phone_number])
-    return response
-
-
-
-def reminder_list(request):
-    reminders = Reminder.objects.all()
-    return render(request, 'reminders/reminder_list.html', {'reminders': reminders})
-
-def add_reminder(request):
+def create_reminder(request):
     if request.method == 'POST':
         form = ReminderForm(request.POST)
         if form.is_valid():
-            form.save()
-            # Implement SMS notification here
-            send_sms('+2547.....', 'Your reminder has been placed')
-            return redirect('reminder_list')
+            # Save the reminder to the database
+            reminder = form.save()
+            # Send an SMS reminder
+            send_sms(reminder)
+            return redirect('reminder_view')
     else:
         form = ReminderForm()
-    return render(request, 'reminders/reminder_form.html', {'form': form})
+    return render(request, 'reminders/index.html', {'form': form})
 
-def edit_reminder(request, reminder_id):
-    reminder = get_object_or_404(Reminder, pk=reminder_id)
-    if request.method == 'POST':
-        form = ReminderForm(request.POST, instance=reminder)
-        if form.is_valid():
-            form.save()
-            # Implement SMS notification here
-            return redirect('reminder_list')
-    else:
-        form = ReminderForm(instance=reminder)
-    return render(request, 'reminders/reminder_form.html', {'form': form})
+def reminder_view(request):
+    reminders = Reminder.objects.all()
+    return render(request, 'reminders/index.html', {'reminders': reminders})
 
-def delete_reminder(request, reminder_id):
-    reminder = get_object_or_404(Reminder, pk=reminder_id)
-    if request.method == 'POST':
-        reminder.delete()
-        return redirect('reminder_list')
-    return render(request, 'reminders/reminder_confirm_delete.html', {'reminder': reminder})
+def send_sms(reminder):
+    africastalking_username = 'your_username'
+    africastalking_api_key = 'your_api_key'
 
+    africastalking.initialize(africastalking_username, africastalking_api_key)
+
+    sms = africastalking.SMS
+
+    message = f"Don't forget: {reminder.title} on {reminder.date} at {reminder.time}"
+
+    try:
+        response = sms.send(message, [reminder.phone_number])
+        print(response)
+    except Exception as e:
+        print(f"SMS sending failed: {e}")

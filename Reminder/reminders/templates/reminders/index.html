@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder App</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Reminder App</h1>
+    </header>
+    <main>
+        <section class="reminder-form">
+            <h2>Create a Reminder</h2>
+            <form action="{% url 'create_reminder' %}" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Add Reminder</button>
+            </form>
+        </section>
+        <section class="reminder-list">
+            <h2>Upcoming Reminders</h2>
+            <ul>
+                {% for reminder in reminders %}
+                <li>
+                    <div class="reminder-info">
+                        <h3>{{ reminder.title }}</h3>
+                        <p>Date: {{ reminder.date }}</p>
+                        <p>Time: {{ reminder.time }}</p>
+                    </div>
+                    <button class="delete-button">Delete</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    
+</body>
+</html>
