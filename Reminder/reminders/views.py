@@ -4,6 +4,9 @@ from django.shortcuts import render, redirect
 from .models import Reminder
 from .forms import ReminderForm
 import africastalking
+from django.views.generic import DeleteView
+from django.urls import reverse_lazy
+
 
 def create_reminder(request):
     if request.method == 'POST':
@@ -37,3 +40,8 @@ def send_sms(reminder):
         print(response)
     except Exception as e:
         print(f"SMS sending failed: {e}")
+
+class ReminderDeleteView(DeleteView):
+    model = Reminder
+    template_name = 'reminders/reminder_confirm_delete.html'
+    success_url = reverse_lazy('reminder_view')

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder App</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Reminder App</h1>
+    </header>
+    <main>
+        <!-- reminder_confirm_delete.html -->
+
+{% block content %}
+<h2>Delete Reminder</h2>
+<p>Are you sure you want to delete the reminder "{{ object.title }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'reminder_view' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+
+    </main>
+    
+</body>
+</html>
